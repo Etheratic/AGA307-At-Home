@@ -15,7 +15,9 @@ public class Projectile : MonoBehaviour
         //checks if the target is tagged
         if(collision.gameObject.CompareTag("Target"))
         {
+            target = collision.gameObject.GetComponent<Target>();
            target.DecreaseHealth();
+           target.CheckHealth();
 
         }
     }

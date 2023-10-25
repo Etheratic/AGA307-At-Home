@@ -111,3 +111,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   health: 3
+  speed: 3
+  scalefactor: 1
+  sizes: 2
+  _TM: {fileID: 0}
+  moveToPos: {fileID: 0}

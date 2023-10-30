@@ -7,7 +7,7 @@ public enum sizes
 }
 
 
-public class TargetManager : MonoBehaviour
+public class TargetManager : Singleton<TargetManager>
 {
 
     public Transform[] spawnPoints;

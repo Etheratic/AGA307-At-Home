@@ -1,10 +1,14 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Projectile : MonoBehaviour
+public class Projectile : GameBehaviour
 {
     private Target target;
+
+    public static event Action<GameObject> OnEnemyHit = null;
+
     void Start()
     {
         Destroy(this.gameObject, 8);
@@ -18,6 +22,8 @@ public class Projectile : MonoBehaviour
            target = collision.gameObject.GetComponent<Target>();
            target.DecreaseHealth();
            target.CheckHealth();
+            OnEnemyHit?.Invoke(this.gameObject);
+           
 
         }
     }

@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Target : MonoBehaviour
 {
+
     public int health = 3;
     public float speed = 10f;
   

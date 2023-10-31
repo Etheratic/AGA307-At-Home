@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 
-public class Timer : GameBehaviour
+public class Timer : GameManager
 {
 
 

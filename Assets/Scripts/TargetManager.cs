@@ -12,17 +12,19 @@ public class TargetManager : Singleton<TargetManager>
 
     public Transform[] spawnPoints;
     public List<GameObject> targets;
-    public int numberOfTargets = 10;
+  
 
     private Target Target;
 
     void Start()
     {
-        for(int i = 0; i < numberOfTargets; i++)
+        for(int i = 0; i < 10; i++)
         {
             SpawnAtRandom();
+           
+            
         }
-
+        GetTargetCount();
         
     }
 
@@ -37,13 +39,23 @@ public class TargetManager : Singleton<TargetManager>
         if(Input.GetKeyUp(KeyCode.I))
         {
             SpawnAtRandom();
+           
         }
 
-      
 
     }
 
+    public void DestroyTarget(GameObject _target)
+    {
+        Destroy(_target);
+        GetTargetCount() ;
+    }
 
+    public void GetTargetCount()
+    {
+        _UI.UpdateTarget(targets.Count);
+
+    }
  
     private void SpawnAtRandom()
     {
@@ -54,12 +66,10 @@ public class TargetManager : Singleton<TargetManager>
         int rndTarget = Random.Range(0, targets.Count - 1);
         int rndSpawnPoint = Random.Range(0, spawnPoints.Length - 1);
 
-        
-
-        //spawn in the enemies
+      //spawn in the enemies
         GameObject target = Instantiate(targets[rndTarget], spawnPoints[rndSpawnPoint].position, spawnPoints[rndSpawnPoint].rotation);
         targets.Add(target);
-
+        GetTargetCount();
     }
 
 }

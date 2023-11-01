@@ -5,7 +5,7 @@ using System.Security.Cryptography;
 using UnityEngine;
 
 
-public class FiringPoint : MonoBehaviour
+public class FiringPoint : GameBehaviour
 {
     [Header("Rigidbody projectile")]
    

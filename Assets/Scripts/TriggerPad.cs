@@ -4,7 +4,7 @@ using Unity.VisualScripting;
 using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
 
-public class TriggerPad : MonoBehaviour
+public class TriggerPad : GameBehaviour
 {
     public GameObject triggeredObject;
 

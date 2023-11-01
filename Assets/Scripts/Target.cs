@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Target : MonoBehaviour
+public class Target : GameBehaviour
 {
 
     public int health = 3;
@@ -78,8 +78,9 @@ public class Target : MonoBehaviour
     public void CheckHealth()
     {
         if (health <= 0)
-
-            Destroy(this.gameObject);
+            _TM.DestroyTarget(this.gameObject);
+      
+        
     }
 
     public void DecreaseHealth()

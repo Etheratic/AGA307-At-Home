@@ -2,8 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+
 public enum TimerDirection { CountUp, CountDown }
-public class Timer : GameBehaviour
+public class Timer : Singleton<Timer>
 {
 
 
@@ -17,7 +18,7 @@ public class Timer : GameBehaviour
 
     private void Start()
     {
-        StartTimer(30, TimerDirection.CountDown);
+        StartTimer(0, timerDirection);
     }
     void Update()
     {
@@ -28,7 +29,7 @@ public class Timer : GameBehaviour
 
         if (currentTime < 0) { currentTime = 0; StopTimer(); }
 
-       
+       _UI.UpdateTime(currentTime);
         
       
     }

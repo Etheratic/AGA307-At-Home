@@ -1,16 +1,26 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Target : GameBehaviour
 {
+    public static event Action<GameObject> OnTargetHit = null;
+    public static event Action<GameObject> OnTargetDie = null;
 
-    public int health = 3;
+    public sizes sizes;
+
+    public int myHealth;
+    private int baseHealth = 100;
     public float speed = 10f;
+
   
     public float scalefactor = 1;
-    public sizes sizes;
+    public int myScore;
+    
+   
     public TargetManager _TM;
+
 
     public Transform moveToPos;
 
@@ -19,48 +29,53 @@ public class Target : GameBehaviour
 
     private void Start()
     {
+        switch (sizes)
+        {
+            case sizes.Small:
+                myHealth = 1;
+                gameObject.transform.localScale = Vector3.one * scalefactor * .5f;
+                speed = speed * 2;
+                myScore = 1;
+                break;
+            case sizes.Medium:
+                gameObject.transform.localScale = Vector3.one * scalefactor * 1f;
+                myHealth = 3;
+                myScore = 2;
+                
+                break;
+            case sizes.Large:
+                myHealth = 5;
+                speed = speed / 2;
+                gameObject.transform.localScale = Vector3.one * scalefactor * 3;
+                myScore = 3;
+                break;
+        }
         _TM = FindObjectOfType<TargetManager>();
         SetUp();
+    }
+
+    public void Die()
+    {
+        OnTargetDie?.Invoke(this.gameObject);
+
+        StopAllCoroutines();
     }
 
     public void Update()
     {
         if (Input.GetKeyUp(KeyCode.R))
         {
-            ChangeSize();
+            //ChangeSize();
         }
     }
     public void SetUp()
     {
-        switch(sizes)
-        {
-            case sizes.Small:
-                health = 1;
-                gameObject.transform.localScale = Vector3.one * scalefactor * .5f;
-                speed = speed * 2;
-            break;
-            case sizes.Medium:
-                gameObject.transform.localScale = Vector3.one * scalefactor * 1f;
-                health = 3;
-               ;
-            break;
-            case sizes.Large:
-                health = 5;
-                speed = speed / 2;
-                gameObject.transform.localScale = Vector3.one * scalefactor * 3;
-                
-                break;
-        }
+      
 
         StartCoroutine(Move());
     }
 
-    private void ChangeSize()
-    {
-        
-        gameObject.transform.localScale = Vector3.one * scalefactor * Random.Range(.5f, 10);
-    }
-
+  
     IEnumerator Move()
     {
         moveToPos = _TM.GetRandomSpawnpoint();
@@ -75,20 +90,40 @@ public class Target : GameBehaviour
         StartCoroutine(Move());
     }
 
+    public void Hit(int _damage)
+    {
+        myHealth -= _damage;
+
+        _GM.AddScore(myScore);
+        _TI.IncrementTimer(5.00f);
+        if (myHealth <= 0)
+        {
+            Die();
+        }
+        else
+        {
+            OnTargetHit?.Invoke(this.gameObject);
+        }
+    }
     public void CheckHealth()
     {
-        if (health <= 0)
+        if (myHealth <= 0)
             _TM.DestroyTarget(this.gameObject);
       
         
     }
 
-    public void DecreaseHealth()
+    private void OnCollisionEnter(Collision collision)
     {
-        health = health -1;
+        if(collision.collider.CompareTag("Projectile"))
+        {
+            Hit(collision.gameObject.GetComponent<Projectile>().damage);
+        }
     }
 
 
-   
+
+
+
 
 }

@@ -16,7 +16,7 @@ public class GameManager : Singleton <GameManager>
 {
     public int score = 0;
     int scoreMultiplier = 1;
-    public float timer;
+    
     public GameState gameState;
     public Difficulty difficulty;
 
@@ -29,42 +29,57 @@ public class GameManager : Singleton <GameManager>
         {
             case Difficulty.easy:
                 scoreMultiplier = 1;
-                _UI.UpdateDifficulty("easy");
+                _UI.UpdateDifficulty(1);
                 break;
             case Difficulty.normal:
                 scoreMultiplier = 2;
-                _UI.UpdateDifficulty("normal");
+                _UI.UpdateDifficulty(2);
                 break;
             case Difficulty.hard:
                 scoreMultiplier = 3;
-                _UI.UpdateDifficulty("hard");
+                _UI.UpdateDifficulty(3);
                 break;
         }
        
     }
-    public void AddScore(int _points)
+
+    public void ChangeGameState(GameState _gameState)
     {
+
+    }
+
+    public void ChangeDifficulty(int _difficulty) 
+    { 
+        difficulty = (Difficulty) _difficulty;
        
-            
+    
+    }
+
+    public void AddScore(int _points)
+    {                   
         score += _points * scoreMultiplier;
         _UI.UpdateScore(score);
     }
 
-    private void OnEnemyHit(GameObject _enemy)
+    private void OnTargetHit(GameObject _target)
     {
-        AddScore(score);
-        print("hit");
+        int _score = _target.GetComponent<Target>().myScore;
+        //AddScore(1);
+        //print("hit");
 
     }
 
     private void OnEnable()
     {
-        Projectile.OnEnemyHit += OnEnemyHit;
+        Target.OnTargetHit += OnTargetHit;
+        Target.OnTargetDie += OnTargetHit;
+
 
     }
 
     private void OnDisable()
     {
-        Projectile.OnEnemyHit -= OnEnemyHit;
+        Target.OnTargetHit -= OnTargetHit;
+        Target.OnTargetDie -= OnTargetHit;
     }
 }

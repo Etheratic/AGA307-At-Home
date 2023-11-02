@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 public enum sizes
 {
@@ -11,21 +12,17 @@ public class TargetManager : Singleton<TargetManager>
 {
 
     public Transform[] spawnPoints;
+   
+    public GameObject[] targetTypes;
+
     public List<GameObject> targets;
-  
+
 
     private Target Target;
 
     void Start()
     {
-        for(int i = 0; i < 10; i++)
-        {
-            SpawnAtRandom();
-           
-            
-        }
-        GetTargetCount();
-        
+        StartCoroutine(SpawnDelay());      
     }
 
     public Transform GetRandomSpawnpoint() 
@@ -38,11 +35,13 @@ public class TargetManager : Singleton<TargetManager>
     {
         if(Input.GetKeyUp(KeyCode.I))
         {
-            SpawnAtRandom();
-           
+            SpawnAtRandom();          
         }
 
-
+        if(Input.GetKeyUp(KeyCode.K))
+        {
+            KillAllTargets();
+        }
     }
 
     public void DestroyTarget(GameObject _target)
@@ -55,6 +54,33 @@ public class TargetManager : Singleton<TargetManager>
     {
         _UI.UpdateTarget(targets.Count);
 
+    }
+    /// <summary>
+    /// kills specific target
+    /// </summary>
+    /// <param name="target_">the target we want to kill</param>
+    public void KillTarget(GameObject target_)
+    {
+        if (targets.Count == 0)
+            return;
+
+        Destroy(target_);
+        targets.Remove(target_);
+        GetTargetCount();
+    }
+    /// <summary>
+    /// kills all targets in the scene
+    /// </summary>
+    void KillAllTargets()
+    {
+        if (targets.Count == 0)
+            return;
+
+        for (int i = targets.Count - 1; i >=0; i--)
+        {
+            KillTarget(targets[0]);
+        }
+        GetTargetCount();
     }
  
     private void SpawnAtRandom()
@@ -72,4 +98,28 @@ public class TargetManager : Singleton<TargetManager>
         GetTargetCount();
     }
 
+    IEnumerator SpawnDelay()
+    {
+        for(int i = 0; i < spawnPoints.Length;i++) 
+        {
+            int rnd = Random.Range(0, targetTypes.Length);
+            GameObject target = Instantiate(targetTypes[rnd], spawnPoints[i].position, spawnPoints[i].rotation);
+            targets.Add(target);
+            GetTargetCount();
+            yield return new WaitForSeconds(2);
+        
+        }
+    }
+    /// <summary>
+    /// event system
+    /// </summary>
+    private void OnEnable()
+    {
+        Target.OnTargetDie += KillTarget; 
+    }
+
+    private void OnDisable() 
+    {
+        Target.OnTargetDie -= KillTarget;
+    }
 }
